@@ -1,0 +1,9 @@
+name: Axlerant Site API key module
+type: module
+description: Provides an API key for JSON file.
+
+package: Custom
+
+core: "8.x"
+dependencies:
+  - rest
