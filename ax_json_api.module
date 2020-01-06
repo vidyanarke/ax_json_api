@@ -48,5 +48,6 @@ function ax_json_api_siteapikey_submit($form, FormStateInterface $form_state) {
 
   if ($siteapikey != NULL && $siteapikey != t('No API key yet')) {
     $config->set('siteapikey', $siteapikey)->save();
+    \Drupal::messenger()->addStatus(t('Site API Key has been saved with '.$siteapikey));
   }
 }

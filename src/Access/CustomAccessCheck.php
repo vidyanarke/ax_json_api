@@ -1,45 +1,38 @@
 <?php
 
-namespace Drupal\ax_json_api\Access;
+namespace Drupal\ax_json_api\Controller;
 
-use Drupal\Core\Access\AccessResult;
-use Drupal\Core\Routing\Access\AccessInterface;
-use Symfony\Component\Routing\Route;
+use Drupal\Core\Controller\ControllerBase;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
- * Class CustomAccessCheck.
+ * Class JsonController.
  *
- * @package Drupal\ax_json_api\Access
+ * @package Drupal\ax_json_api\Controller
  */
-class CustomAccessCheck implements AccessInterface {
+class JsonController extends ControllerBase {
 
   /**
-   * Access conditions for JSON endpoint.
+   * Returns JSON response of node data.
    *
-   * @param \Symfony\Component\Routing\Route $route
-   *   Route of json endpoint.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   Request.
    * @param string $site_api_key
-   *   API key from url.
-   * @param int $nid
-   *   Node id from url.
+   *   Site API key from url.
+   * @param int|null $nid
+   *   Node Id from url.
    *
-   * @return \Drupal\Core\Access\AccessResultAllowed|\Drupal\Core\Access\AccessResultForbidden
-   *   Returns access value.
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   Node data in the form of JSON.
    */
-  public function access(Route $route, $site_api_key, $nid) {
-    // Get site API key for verification.
-    $siteapikey = \Drupal::config('system.site')->get('siteapikey', '');
-    // Node object.
+  public function content($site_api_key = NULL, $nid = NULL) {
     $node_storage = \Drupal::entityTypeManager()->getStorage('node');
     $node = $node_storage->load($nid);
 
-    if ($node) {
-      // Check the node type is page and site api is present.
-      if ($site_api_key == $siteapikey && $node->getType() == 'page') {
-        return AccessResult::allowed();
-      }
-    }
-    return AccessResult::forbidden();
+    $serializer = \Drupal::service('serializer');
+    $data = $serializer->serialize($node, 'json');
+
+    return new JsonResponse($data);
   }
 
 }

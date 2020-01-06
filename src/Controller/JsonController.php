@@ -4,7 +4,6 @@ namespace Drupal\ax_json_api\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class JsonController.
@@ -12,13 +11,6 @@ use Symfony\Component\HttpFoundation\Request;
  * @package Drupal\ax_json_api\Controller
  */
 class JsonController extends ControllerBase {
-
-  /**
-   * The Site API key.
-   *
-   * @var string
-   */
-  protected $key;
 
   /**
    * Returns JSON response of node data.
@@ -33,8 +25,7 @@ class JsonController extends ControllerBase {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   Node data in the form of JSON.
    */
-  public function content(Request $request, $site_api_key = NULL, $nid = NULL) {
-    $this->key = \Drupal::config('system.site')->get('siteapikey', '');
+  public function content($site_api_key = NULL, $nid = NULL) {
     $node_storage = \Drupal::entityTypeManager()->getStorage('node');
     $node = $node_storage->load($nid);
 
